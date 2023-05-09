@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<link href="{% static 'register.css' %}" rel="stylesheet" />
+{% endblock head %}
+{% block body %}
+
+
+{% if message %}
+<div class="alert alert-sucess" role="alert" id="message-div">
+    {{message}}
+</div>
+{% endif %}
+
+<form method="POST">
+    {% csrf_token %}
+    <div class="container">
+      <h1>Login</h1>
+      <hr>
+      <label for="email"><b>Email</b></label>
+      <input type="text" placeholder="Enter Email" name="email" id="email" required>
+  
+      <label for="psw"><b>Password</b></label>
+      <input type="password" placeholder="Enter Password" name="password" id="password" required>
+  
+      <button type="submit" class="registerbtn">Login</button>
+    </div>
+    
+    <div class="container signin">
+      <p>Don't have an account? click here to register <a href="{% url 'register' %}">Sign Up</a>.</p>
+      <p>Forgot Password ? click here to reset <a href="{% url 'register' %}">Forgot password</a>.</p>
+    </div>
+</form>
+
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<link href="{% static 'index.css' %}" rel="stylesheet" />
+{% endblock head %}
+
+
+{% block body %}
+<div class="container">
+    <center>
+        <form method="GET">
+            <div class="row mt-2">
+                <div class="col-10">
+                    <input type="text" class="form-control" name="q" placeholder="Search by author, title, genre etc" value="{{q}}">
+                </div>
+                <div class="col-2">
+                    <button style="width :100%;" class="btn btn-outline-success" type="submit">Search</button>
+                </div>
+           
+        </form> 
+    </center>
+    <div class="row m2">
+        {% for book in books %}
+        <div class="card mt-3">
+            <img src="/media/{{book.thumbnail}}" alt="NA" style="width:100% ;height: 300px;">
+            <h2>{{book.title|truncatechars:9}}</h2>
+            <p class="price">${{book.price}}</p>
+            <p>{{book.descriptions|truncatechars:50 }}</p>
+            {% if user.is_authenticated %}
+                <p><button onclick="add_item(this)" book="{{book.pk}}">Add to Cart</button></p> 
+            {% else %}
+                <p><a href="{% url 'login' %}" book="{{book.pk}}"><button book="{{book.pk}}">Add to Cart</button></a></p> 
+            {% endif %}
+            
+        </div>
+        {% endfor %}
+
+    </div>
+
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+
+    let csrftoken = '{{ csrf_token }}';
+    let cart_url = "{% url 'cart' %}";
+
+</script>
+<script src="{% static 'js/index.js' %}" ></script>
+{% endblock js %}

@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<link href="{% static 'ticket.css' %}" rel="stylesheet" />
+{% endblock head %}
+
+
+{% block body %}
+<div class="container">
+    <h2>My Ticket</h2>
+
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+
+    let csrftoken = '{{ csrf_token }}';
+    let cart_url = "{% url 'cart' %}";
+
+</script>
+<script src="{% static 'js/ticket.js' %}" ></script>
+{% endblock js %}
