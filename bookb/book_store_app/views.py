@@ -6,8 +6,7 @@ from book_store_app.models import User, Books, UserCart
 from django.contrib.auth import login, logout
 from django.contrib.auth.hashers import  check_password
 from django.db.models import Q
-from django.db.models import Count, Sum
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Sum
 import json
 
 # Create your views here.
@@ -27,6 +26,20 @@ def user_logout(request):
     return redirect('login')
 
 
+def get_cart_count(request):
+
+    total = 0
+    if  request.user.is_authenticated:
+        total_cart = UserCart.objects.filter(fk_user=request.user)
+        total_cart = total_cart.annotate(total_count=Sum("items")).values()
+
+        
+        for item in total_cart:
+            total += item['items']
+
+    return total
+
+
 class IndexView(View):
 
     template_name = 'index.html'
@@ -40,31 +53,41 @@ class IndexView(View):
         else:
             books = Books.objects.all()
             
-        total = 0
-        if  request.user.is_authenticated:
-            total_cart = UserCart.objects.filter(fk_user=request.user)
-            total_cart = total_cart.annotate(total_count=Sum("items")).values()
 
-            
-            for item in total_cart:
-                total += item['items']
-
-        return render(request, self.template_name, { 'books' : books , 'q' :q ,'cart_count' : total})
+        return render(request, self.template_name, { 'books' : books , 'q' :q ,'cart_count' : get_cart_count(request)})
     
 
 
-class CartView(View, LoginRequiredMixin):
+def delete_cart_item(request, pk):
+
+    cart = UserCart.objects.get(pk_cart=pk)
+    cart.delete()
+    return redirect('cart')
+
+
+class CartView(View):
 
     login_url="login"
 
     template_name = 'cart.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect(self.login_url)
+        return super(CartView, self).dispatch(request, *args, **kwargs)
+
+
+    def get(self, request, *args, **kwargs):
+
+        carts_lists = UserCart.objects.filter(fk_user=request.user)
+
+        return render(request, self.template_name, {'cart_count' : get_cart_count(request), 'cart_lists' : carts_lists })
 
     def post(self, request, *args, **kwargs):
 
         pk_book = json.load(request)['pk_book']
 
         book = Books.objects.get(pk_book=pk_book)
-        total_cart = 0
 
         if UserCart.objects.filter(fk_user=request.user, fk_book_id=pk_book).exists():
 
@@ -81,15 +104,9 @@ class CartView(View, LoginRequiredMixin):
                 total_price=book.price
             )
 
-        total_cart = UserCart.objects.filter(fk_user=request.user)
-        total_cart = total_cart.annotate(total_count=Sum("items")).values()
-
-        total = 0
-        for item in total_cart:
-            total += item['items']
         
+        return JsonResponse({'message' : 'success', 'total_cart' : get_cart_count(request)})
 
-        return JsonResponse({'message' : 'success', 'total_cart' : total})
 
 
 
@@ -120,6 +137,12 @@ class RegisterView(View):
 class TicketView(View):
 
     template_name = 'ticket.html'
+    login_url = 'login'
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect(self.login_url)
+        return super(TicketView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
 
@@ -130,9 +153,34 @@ class TicketView(View):
         pass
 
 
+
+class CheckOut(View):
+
+    template_name = 'sample_checkout.html'
+    login_url = 'login'
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect(self.login_url)
+        return super(CheckOut, self).dispatch(request, *args, **kwargs)
+    
+
+    def get(self, request, *args, **kwargs):
+
+        return render(request, self.template_name)
+
+
+
+
 class MyTicketView(View):
 
     template_name = 'my-ticket.html'
+    login_url = 'login'
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect(self.login_url)
+        return super(MyTicketView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
 
@@ -158,15 +206,14 @@ class LoginView(View):
 
         email = request.POST.get('email')
         password = request.POST.get('password')
-
-        print('Values: ',email, password)
-        user = User.objects.get(email=email)
-        is_valid = check_password(password, user.password)
+        try:
+            user = User.objects.get(email=email)
+            is_valid = check_password(password, user.password)
+            if is_valid:
+                login(request, user)
+                return redirect('index')
+            
+        except Exception as e:
+            pass
         
-        if is_valid:
-
-            login(request, user)
-            print('valid user')
-            return redirect('index')
-        
-        return render(request, self.template_name, { 'message' : 'login faild, please check email/password {}'.format(user)  })
+        return render(request, self.template_name, { 'message' : 'login faild, please check email/password' })

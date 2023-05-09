@@ -7,8 +7,8 @@
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.1/css/fontawesome.min.css" rel="stylesheet">
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.0/css/all.min.css" integrity="sha512-3PN6gfRNZEX4YFyz+sIyTF6pGlQiryJu9NlGhu9LrLMQ7eDjNgudQoFDK3WSNAayeIKc6B8WXXpo4a7HqxjKwg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.0/js/all.min.js" integrity="sha512-ISfdo0dGmoT6xQiYhsCuBXNy982/TMgk9WnSeFiLoBVffcwXCWMyfYtmobfJuBvSQZVpjPvEJtGEPdTH9XKpvw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     {% block head %}{% endblock head %}
     <title>
         {% block title %}{% endblock title %}
@@ -21,6 +21,10 @@
       .btn-custom:hover{
         border : 2px solid grey;
       }
+      .brandcolor{
+        background-color : #f14e92;
+        color : white;
+      }
     </style>
   </head>
   <body>
@@ -30,44 +34,66 @@
             <strong><font color="#f14e92">B</font>ook<font color="#f14e92">B</font></strong> Store
           </a>
           <form class="d-flex">
+            <button class="btn btn-custom btn-sm" ><i class="fas fa-moon"></i></button> &nbsp; &nbsp;
             {% if user.is_authenticated %}
 
-            <a class="btn btn-custom" href="{% url 'ticket' %}">Raise Ticket</a> &nbsp; &nbsp;
+            <a class="btn btn-custom btn-sm" href="{% url 'ticket' %}"><i class="fas fa-book"></i></a> &nbsp; &nbsp;
 
-            <a class="btn btn-custom" href="{% url 'my-ticket' %}">My Tickets</a>  &nbsp; &nbsp;
-            
-            <button type="button" class="btn btn-primary position-relative">
-              Cart
+
+            <a class="btn btn-custom btn-sm" href="{% url 'ticket' %}">?</a> &nbsp; &nbsp;
+
+            <a class="btn btn-custom btn-sm" href="{% url 'my-ticket' %}"><i class="fas fa-list"></i></a>  &nbsp; &nbsp;
+            <a href="{% url 'cart' %}">
+            <button type="button" class="btn btn-primary position-relative btn-sm">
+              <i class="fas fa-cart-arrow-down"></i>
               <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                 {% if cart_count %}
                 <span id="temp-cart-count">{{cart_count}}</span> 
                 {% else %}
                 <span id="temp-cart-count">0</span>
                 {% endif %}
-                <span class="visually-hidden">unread messages</span>
+                <span class="visually-hidden"></span>
               </span>
-            </button>
+            </button></a>
             &nbsp; &nbsp;
 
-            <button type="button" class="btn btn-primary position-relative">
-              Inbox
+            <button type="button" class="btn btn-primary position-relative btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">
+              <i class="fas fa-envelope"></i>
               <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                 {% if notification_count %}
                 {% else %}
                 0
                 {% endif %}
-                <span class="visually-hidden">unread messages</span>
+                <span class="visually-hidden"></span>
               </span>
             </button> &nbsp;
-            <a class="btn btn-custom" href="{% url 'logout' %}">Logout</a>
+            <a class="btn btn-custom btn-sm" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i></a>
             {% else %}
-            <a class="btn btn-custom" href="{% url 'login' %}">Sign In</a> &nbsp;
-            <a class="btn btn-custom" href="{% url 'register' %}">Register</a>
+            <a class="btn btn-custom btn-sm" href="{% url 'login' %}">Sign In</a> &nbsp;
+            <a class="btn btn-custom btn-sm" href="{% url 'register' %}">Register</a>
             {% endif %}
           </form>
         </div>
         
       </nav>
+
+      <!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Notifications</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
       
     {% block body %}{% endblock body %}
 
