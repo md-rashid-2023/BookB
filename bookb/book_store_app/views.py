@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.views import View
 from book_store_app.tasks import send_email_otp
-from book_store_app.models import User, Books, UserCart
+from book_store_app.models import User, Books, UserCart, UserSiteSettings
 from django.contrib.auth import login, logout
 from django.contrib.auth.hashers import  check_password
 from django.db.models import Q
@@ -66,6 +66,20 @@ def delete_cart_item(request, pk):
     cart = UserCart.objects.get(pk_cart=pk)
     cart.delete()
     return redirect('cart')
+
+
+def update_theme(request):
+
+    try:
+        theme = UserSiteSettings.objects.get(fk_user=request.user)
+        theme.dark_theme =  not theme.dark_theme
+        theme.save()
+        request.session["dark_theme"]  = theme.dark_theme
+    except Exception as e:
+        UserSiteSettings.objects.create(fk_user=request.user, dark_theme=True)
+        request.session["dark_theme"] = True
+
+    return redirect('index')
 
 
 class CartView(View):
@@ -137,10 +151,11 @@ class RegisterView(View):
                                     password=password)
             user.username = email
             user.save()
-            print('here')
+            UserSiteSettings.objects.create(fk_user=user)
+
             return render(request, self.template_name,   { 'message' : 'Account Successfully Created' } )
         except Exception as e:
-            print(' i am here')
+            print(' i am here', e)
             return render(request, self.template_name,  { 'message' : 'Account Creation Failed {}'.format(e) })
 
 
@@ -218,10 +233,14 @@ class LoginView(View):
             is_valid = check_password(password, user.password)
             if is_valid:
                 login(request, user)
+
+                if UserSiteSettings.objects.filter(fk_user=user).exists():
+                    request.session["dark_theme"] = UserSiteSettings.objects.get(fk_user=user).dark_theme
+
                 return redirect('index')
 
         except Exception as e:
-            pass
+            print(e)
 
         return render(request, self.template_name, { 'message' : 'login faild, please check email/password' })
 

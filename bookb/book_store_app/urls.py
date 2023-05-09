@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import IndexView, RegisterView, LoginView, user_logout, CartView, TicketView, MyTicketView , ForgotPassword , ChangePassword , delete_cart_item, CheckOut
+from .views import IndexView, RegisterView, LoginView, user_logout, CartView, TicketView, MyTicketView, delete_cart_item, CheckOut, update_theme , ForgotPassword
 from django.contrib.auth.decorators import login_required
 
 urlpatterns = [
@@ -12,5 +12,6 @@ urlpatterns = [
    path('my-ticket/',MyTicketView.as_view(), name='my-ticket' ),
    path('forgot-password',ForgotPassword.as_view(),name='forgot-password'),
    path('delete-cart/<pk>',delete_cart_item, name='delete-cart-item'),
-   path('checkout',CheckOut.as_view(), name="checkout" )
+   path('checkout',CheckOut.as_view(), name="checkout" ),
+   path('update-theme',update_theme, name="update_theme" ),
 ]

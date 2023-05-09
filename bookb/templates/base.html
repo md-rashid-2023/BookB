@@ -28,19 +28,44 @@
         background-color : #f14e92;
         color : white;
       }
+      .text-color {
+        color :white !importent;
+      }
+      .dark-theme {
+        background-color : grey;
+      }
+      
     </style>
   </head>
   <body>
+  
+    {% if request.session.dark_theme %}
+    <body class=" dark-theme text-color">
+    <nav class="navbar navbar-dark bg-dark">
+    {% else %}
+    <body>
     <nav class="navbar navbar-light bg-light">
+    {% endif %}  
+     
         <div class="container-fluid">
           <a class="navbar-brand" href="{% url 'index' %}">
             <strong><font color="#f14e92">B</font>ook<font color="#f14e92">B</font></strong> Store
           </a>
           <form class="d-flex">
-            <button class="btn btn-custom btn-sm" ><i class="fas fa-moon"></i></button> &nbsp; &nbsp;
+            
+             <button class="btn btn-custom btn-sm" ><i class="fas fa-book"></i></button> &nbsp; &nbsp;
+
             {% if user.is_authenticated %}
 
-            <a class="btn btn-custom btn-sm" href="{% url 'ticket' %}"><i class="fas fa-book"></i></a> &nbsp; &nbsp;
+            <a class="btn btn-custom btn-sm" href="{% url 'update_theme' %}">
+              {% if request.session.dark_theme %}
+                <i class="fas fa-sun"></i>
+                {% else %}
+                <i class="fas fa-moon"></i>
+                
+               {% endif %}
+            
+            </a> &nbsp; &nbsp;
 
 
             <a class="btn btn-custom btn-sm" href="{% url 'ticket' %}">?</a> &nbsp; &nbsp;

@@ -15,7 +15,7 @@
                     <input type="text" class="form-control" name="q" placeholder="Search by author, title, genre etc" value="{{q}}">
                 </div>
                 <div class="col-2">
-                    <button style="width :100%;" class="btn btn-outline-success" type="submit">Search</button>
+                    <button style="width :100%;" class="btn {% if request.session.dark_theme %} btn-warning {% else %} btn-outline-success {% endif %}" type="submit">Search</button>
                 </div>
            
         </form> 
