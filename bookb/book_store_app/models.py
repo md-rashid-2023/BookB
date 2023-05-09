@@ -61,7 +61,11 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.first_name+" "+self.last_name
 
 
+class UserSiteSettings(models.Model):
 
+    fk_user = models.ForeignKey('User', on_delete=models.DO_NOTHING, db_column='fk_user', db_index=True)
+    dark_theme = models.BooleanField(default=False)
+    
 
 class UserProperties(models.Model):
     pk_user_property = models.AutoField(primary_key=True)

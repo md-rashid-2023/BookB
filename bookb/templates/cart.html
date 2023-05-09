@@ -8,7 +8,7 @@
 
 {% block body %}
 <div class="container">
-    <table class="  table table-striped table-hover mt-3">
+    <table class=" table table-striped table-hover mt-3 {% if request.session.dark_theme %} bg-light {% endif %}">
         <thead class="brandcolor">
             <tr>
                 <td>S.No</td>
