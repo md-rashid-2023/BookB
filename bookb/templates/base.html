@@ -42,10 +42,13 @@
 
             <a class="btn btn-custom btn-sm" href="{% url 'ticket' %}"><i class="fas fa-book"></i></a> &nbsp; &nbsp;
 
-            <a class="btn btn-custom" href="{% url 'my-ticket' %}">My Tickets</a>  &nbsp; &nbsp;
 
-            <button type="button" class="btn btn-primary position-relative">
-              Cart
+            <a class="btn btn-custom btn-sm" href="{% url 'ticket' %}">?</a> &nbsp; &nbsp;
+
+            <a class="btn btn-custom btn-sm" href="{% url 'my-ticket' %}"><i class="fas fa-list"></i></a>  &nbsp; &nbsp;
+            <a href="{% url 'cart' %}">
+            <button type="button" class="btn btn-primary position-relative btn-sm">
+              <i class="fas fa-cart-arrow-down"></i>
               <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                 {% if cart_count %}
                 <span id="temp-cart-count">{{cart_count}}</span>
