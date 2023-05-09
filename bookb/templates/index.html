@@ -36,36 +36,6 @@
         </div>
         {% endfor %}
 
-        {% for book in books %}
-        <div class="card mt-3">
-            <img src="/media/{{book.thumbnail}}" alt="NA" style="width:100% ;height: 300px;">
-            <h2>{{book.title|truncatechars:9}}</h2>
-            <p class="price">${{book.price}}</p>
-            <p>{{book.descriptions|truncatechars:50 }}</p>
-            {% if user.is_authenticated %}
-                <p><button onclick="add_item(this)" book="{{book.pk}}">Add to Cart</button></p> 
-            {% else %}
-                <p><a href="{% url 'login' %}" book="{{book.pk}}"><button book="{{book.pk}}">Add to Cart</button></a></p> 
-            {% endif %}
-            
-        </div>
-        {% endfor %}
-
-        {% for book in books %}
-        <div class="card mt-3">
-            <img src="/media/{{book.thumbnail}}" alt="NA" style="width:100% ;height: 300px;">
-            <h2>{{book.title|truncatechars:9}}</h2>
-            <p class="price">${{book.price}}</p>
-            <p>{{book.descriptions|truncatechars:50 }}</p>
-            {% if user.is_authenticated %}
-                <p><button onclick="add_item(this)" book="{{book.pk}}">Add to Cart</button></p> 
-            {% else %}
-                <p><a href="{% url 'login' %}" book="{{book.pk}}"><button book="{{book.pk}}">Add to Cart</button></a></p> 
-            {% endif %}
-            
-        </div>
-        {% endfor %}
-
     </div>
 
 </div>
