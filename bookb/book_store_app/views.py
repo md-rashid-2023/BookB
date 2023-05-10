@@ -318,3 +318,9 @@ class ForgotPassword(View):
                 return redirect('login')
             return JsonResponse({'data':'User Does not Exist'})
         return render(request,self.template_name)
+
+class Admin(View):
+    template_name = 'admin.html'
+
+    def get(self,request,*args, **kwargs):
+        return render(request,self.template_name)
