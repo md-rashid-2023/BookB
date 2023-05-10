@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import IndexView, RegisterView, LoginView, user_logout, CartView, TicketView, MyTicketView, delete_cart_item, CheckOut, update_theme
+from .views import IndexView, RegisterView, LoginView, user_logout, CartView, TicketView, MyTicketView, delete_cart_item, CheckOut, update_theme , PromotionMail
 from django.contrib.auth.decorators import login_required
 
 urlpatterns = [
@@ -13,4 +13,5 @@ urlpatterns = [
    path('delete-cart/<pk>',delete_cart_item, name='delete-cart-item'),
    path('checkout',CheckOut.as_view(), name="checkout" ),
    path('update-theme',update_theme, name="update_theme" ),
-] 
+   path('promotion-mail',PromotionMail.as_view(),name='promotion-mail')
+]

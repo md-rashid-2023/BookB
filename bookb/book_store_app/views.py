@@ -6,6 +6,7 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.hashers import  check_password
 from django.db.models import Q
 from django.db.models import Sum
+from book_store_app.tasks import send_email_promotion
 import json
 
 # Create your views here.
@@ -235,3 +236,31 @@ class LoginView(View):
             print(e)
 
         return render(request, self.template_name, { 'message' : 'login faild, please check email/password' })
+
+class PromotionMail(View):
+    template_name = 'promotion.html'
+
+    def get(self,request,*args, **kwargs):
+        context = {}
+        context['users'] = User.objects.all()
+        if request.user.is_superuser:
+            return render(request,self.template_name,context=context)
+        else:
+            return redirect('index')
+
+    def post(self,request,*args, **kwargs):
+        action = request.POST.get('action','')
+        if action == 'send_mass_mail':
+            users = request.POST.getlist('users[]','')
+            subject = request.POST.get('subject','Promotion Mail')
+            print(users)
+            if 'all' in users:
+                receiver_list = list(User.objects.all().values_list('email',flat=True))
+                send_email_promotion.delay(subject,receiver_list)
+                return JsonResponse({'data':users})
+            else:
+                receiver_list = list(User.objects.filter(email__in=users).values_list('email',flat=True))
+                send_email_promotion.delay(subject,receiver_list)
+                return JsonResponse({'data':users})
+        else:
+            return redirect('index')
