@@ -1,14 +1,18 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.views import View
+from book_store_app.tasks import send_email_otp
 from book_store_app.models import User, Books, UserCart, UserSiteSettings
 from django.contrib.auth import login, logout
 from django.contrib.auth.hashers import  check_password
 from django.db.models import Q
+from django.db.models import Count, Sum
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.hashers import make_password
 from django.db.models import Sum
 from book_store_app.tasks import send_email_promotion
 import json
-
+import random
 # Create your views here.
 
 
@@ -118,7 +122,6 @@ class CartView(View):
                 total_price=book.price
             )
 
-
         return JsonResponse({'message' : 'success', 'total_cart' : get_cart_count(request)})
 
 
@@ -205,9 +208,6 @@ class MyTicketView(View):
 
         pass
 
-
-
-
 class LoginView(View):
 
     template_name = 'account/login.html'
@@ -264,3 +264,57 @@ class PromotionMail(View):
                 return JsonResponse({'data':users})
         else:
             return redirect('index')
+class ForgotPassword(View):
+
+    template_name = 'forgot-password.html'
+
+    def get(self,request,*args, **kwargs):
+
+        return render(request,self.template_name)
+
+    def post(self,request,*args, **kwargs):
+
+        action = request.POST.get('action','')
+
+        if action  == 'forgot-password':
+            message = ''
+            email = request.POST.get('email','')
+            if User.objects.filter(email=email).exists():
+                user = User.objects.get(email=email)
+                otp = random.randint(100000, 999999)
+                user.otp = otp
+                user.save()
+                send_email_otp.delay(otp,email)
+                message = 'OTP sent to given mail id'
+
+            else:
+                message = 'User does not exist'
+
+            return JsonResponse({'data': message})
+
+        if action  == 'verify-otp':
+            message = ''
+            is_verified = False
+            otp = request.POST.get('otp','')
+            email = request.POST.get('email','')
+            if User.objects.filter(email=email,otp=otp).exists():
+                user = User.objects.get(email=email)
+                user.otp_verified = True
+                user.save()
+                message = 'OTP Verified'
+                is_verified = True
+            else:
+                message = 'OTP Not Verified'
+
+            return JsonResponse({'data': message,'is_verified':is_verified})
+
+        if action == 'update-password':
+            password = request.POST.get('password','')
+            email = request.POST.get('email','')
+            if User.objects.filter(email=email).exists():
+                user = User.objects.get(email=email)
+                user.password = make_password(password=password)
+                user.save()
+                return redirect('login')
+            return JsonResponse({'data':'User Does not Exist'})
+        return render(request,self.template_name)
