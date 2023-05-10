@@ -11,3 +11,6 @@ def send_email_otp(otp,email):
     """
     email_content = render_to_string('../templates/otp_email.html',{'otp':otp})
     send_mail("OTP",email_content, settings.EMAIL_HOST_USER, [email], html_message=email_content)
+
+
+    

@@ -8,7 +8,17 @@
 
 {% block body %}
 <div class="container">
-    <h2>Ticket</h2>
+    <form method="POST" class="form">
+        {% csrf_token %}
+        
+        <input class="form-control mt-2" type="text" name="name" placeholder="Name" required/>
+        <input class="form-control mt-2" type="text" name="subject" placeholder="Subject" required/>
+        <textarea class="form-control mt-2" name="content" required>
+        
+        </textarea>
+        <button type="submit" class="btn btn-warning mt-2">Submit</button>
+
+    </form>
 
 </div>
 {% endblock %}

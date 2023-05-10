@@ -9,7 +9,10 @@
 {% block body %}
 <div class="container">
     <h2>My Ticket</h2>
-
+     {% for ticket in tickets %}
+            <strong>{{ticket.fk_ticket.subject}}</strong>
+            <br>
+     {% endfor %}
 </div>
 {% endblock %}
 
