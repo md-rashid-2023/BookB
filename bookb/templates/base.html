@@ -12,6 +12,8 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.0/css/all.min.css" integrity="sha512-3PN6gfRNZEX4YFyz+sIyTF6pGlQiryJu9NlGhu9LrLMQ7eDjNgudQoFDK3WSNAayeIKc6B8WXXpo4a7HqxjKwg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.0/js/all.min.js" integrity="sha512-ISfdo0dGmoT6xQiYhsCuBXNy982/TMgk9WnSeFiLoBVffcwXCWMyfYtmobfJuBvSQZVpjPvEJtGEPdTH9XKpvw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+
     {% block head %}{% endblock head %}
     <title>
         {% block title %}{% endblock title %}
@@ -34,25 +36,26 @@
       .dark-theme {
         background-color : grey;
       }
-      
+
     </style>
   </head>
   <body>
-  
+
     {% if request.session.dark_theme %}
     <body class=" dark-theme text-color">
     <nav class="navbar navbar-dark bg-dark">
     {% else %}
     <body>
     <nav class="navbar navbar-light bg-light">
-    {% endif %}  
-     
+    {% endif %}
+
         <div class="container-fluid">
           <a class="navbar-brand" href="{% url 'index' %}">
             <strong><font color="#f14e92">B</font>ook<font color="#f14e92">B</font></strong> Store
           </a>
           <form class="d-flex">
-            
+
+            <a href="{% url 'admin' %}" class="btn btn-custom mx-2">Admin</a>
              <button class="btn btn-custom btn-sm" ><i class="fas fa-book"></i></button> &nbsp; &nbsp;
 
             {% if user.is_authenticated %}
@@ -62,9 +65,9 @@
                 <i class="fas fa-sun"></i>
                 {% else %}
                 <i class="fas fa-moon"></i>
-                
+
                {% endif %}
-            
+
             </a> &nbsp; &nbsp;
 
 

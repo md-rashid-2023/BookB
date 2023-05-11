@@ -10,6 +10,7 @@ from django.db.models import Count, Sum
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.hashers import make_password
 from django.db.models import Sum
+from book_store_app.tasks import send_email_promotion
 import json
 import random
 # Create your views here.
@@ -120,14 +121,6 @@ class CartView(View):
                 items=1,
                 total_price=book.price
             )
-
-        total_cart = UserCart.objects.filter(fk_user=request.user)
-        total_cart = total_cart.annotate(total_count=Sum("items")).values()
-
-        total = 0
-        for item in total_cart:
-            total += item['items']
-
 
         return JsonResponse({'message' : 'success', 'total_cart' : get_cart_count(request)})
 
@@ -263,6 +256,33 @@ class LoginView(View):
 
         return render(request, self.template_name, { 'message' : 'login faild, please check email/password' })
 
+class PromotionMail(View):
+    template_name = 'promotion.html'
+
+    def get(self,request,*args, **kwargs):
+        context = {}
+        context['users'] = User.objects.all()
+        if request.user.is_superuser:
+            return render(request,self.template_name,context=context)
+        else:
+            return redirect('index')
+
+    def post(self,request,*args, **kwargs):
+        action = request.POST.get('action','')
+        if action == 'send_mass_mail':
+            users = request.POST.getlist('users[]','')
+            subject = request.POST.get('subject','Promotion Mail')
+            print(users)
+            if 'all' in users:
+                receiver_list = list(User.objects.all().values_list('email',flat=True))
+                send_email_promotion.delay(subject,receiver_list)
+                return JsonResponse({'data':users})
+            else:
+                receiver_list = list(User.objects.filter(email__in=users).values_list('email',flat=True))
+                send_email_promotion.delay(subject,receiver_list)
+                return JsonResponse({'data':users})
+        else:
+            return redirect('index')
 class ForgotPassword(View):
 
     template_name = 'forgot-password.html'
@@ -316,4 +336,10 @@ class ForgotPassword(View):
                 user.save()
                 return redirect('login')
             return JsonResponse({'data':'User Does not Exist'})
+        return render(request,self.template_name)
+
+class Admin(View):
+    template_name = 'admin.html'
+
+    def get(self,request,*args, **kwargs):
         return render(request,self.template_name)

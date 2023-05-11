@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Welcome to Our Platform!</title>
+  <style>
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f7f7f7;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #ffffff;
+      border: 1px solid #e5e5e5;
+      border-radius: 4px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .logo {
+      max-width: 150px;
+      height: auto;
+    }
+
+    .message {
+      margin-bottom: 30px;
+      color: #333333;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    .cta-button {
+      display: inline-block;
+      padding: 12px 20px;
+      background-color: #4CAF50;
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 16px;
+      border-radius: 4px;
+    }
+
+    .footer {
+      margin-top: 30px;
+      text-align: center;
+      color: #999999;
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="message">
+      <h1>Welcome to Our Platform!</h1>
+      <p>Dear {{email}},</p>
+      <p>Thank you for joining our platform. We're excited to have you on board!</p>
+      <p>Here are a few things you can do:</p>
+      <ul>
+        <li>Explore our features and services</li>
+        <li>Customize your profile settings</li>
+        <li>Get started with your first order</li>
+      </ul>
+      <p>Happy exploring!</p>
+    </div>
+    <div class="footer">
+      <p>This email was sent to [Email]. If you no longer wish to receive these emails, you can ignore.</p>
+    </div>
+  </div>
+</body>
+
+</html>

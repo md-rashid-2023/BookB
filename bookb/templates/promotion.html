@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head %}
+<link href="{% static 'register.css' %}" rel="stylesheet" />
+{% endblock head %}
+
+{% block body %}
+<div class="container">
+    <div class="row m2">
+        <form action="" id="form" method="post">
+            {% csrf_token %}
+            <div class="container">
+              <h1>Promotion Mail</h1>
+              <hr>
+
+              <label for="subject"><b>Subject</b></label>
+              <input type="text" placeholder="Enter Subject" name="subject" id="subject" required>
+
+                <select class="form-select" name="user" id="user" multiple>
+                    <option value="all">All</option>
+                    {% for user in users  %}
+                        <option value="{{user.email}}">{{user.email}}</option>
+                    {% endfor %}
+                </select>
+
+              <button type="submit" id="send-mail" class="registerbtn">Send Email</button>
+
+            </div>
+        </form>
+    </div>
+
+</div>
+{% endblock %}
+
+
+{% block js %}
+<script>
+    let csrf = "{{csrf_token}}";
+</script>
+<script src="{% static 'js/promotion.js' %}" ></script>
+{% endblock js %}
