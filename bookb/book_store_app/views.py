@@ -13,15 +13,7 @@ from django.db.models import Sum
 from book_store_app.tasks import send_email_promotion
 import json
 import random
-# Create your views here.
 
-
-# def index(request):
-
-#     send_email.delay()
-#     print('testing celery')
-
-#     return render(request, 'index.html')
 
 def user_logout(request):
 

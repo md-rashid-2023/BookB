@@ -54,9 +54,10 @@
             <strong><font color="#f14e92">B</font>ook<font color="#f14e92">B</font></strong> Store
           </a>
           <form class="d-flex">
-
-            <a href="{% url 'admin' %}" class="btn btn-custom mx-2">Admin</a>
-             <button class="btn btn-custom btn-sm" ><i class="fas fa-book"></i></button> &nbsp; &nbsp;
+            {% if user.is_superuser %}
+            <a href="{% url 'admin' %}" class="btn btn-custom mx-2 btn-sm">Admin</a>
+            {% endif %}
+             
 
             {% if user.is_authenticated %}
 
