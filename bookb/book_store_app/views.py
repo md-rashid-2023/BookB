@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.views import View
 from book_store_app.tasks import send_email_otp
-from book_store_app.models import User, Books, UserCart, UserSiteSettings
+from book_store_app.models import User, Books, UserCart, UserSiteSettings, Ticket, TicketConversation
 from django.contrib.auth import login, logout
 from django.contrib.auth.hashers import  check_password
 from django.db.models import Q
@@ -168,7 +168,24 @@ class TicketView(View):
 
     def post(self, request, *args, **kwargs):
 
-        pass
+        name = request.POST.get('name')
+        subject = request.POST.get('subject')
+        content = request.POST.get('content')
+
+        ticket = Ticket.objects.create(
+            fk_user = request.user ,
+            subject = subject, 
+            description = content
+        )
+
+        TicketConversation.objects.create(
+            fk_ticket = ticket, 
+            text = content,
+            name = name, 
+            admin_name = 'BookB Admin',
+        )
+
+        return redirect('ticket')
 
 
 
@@ -202,7 +219,9 @@ class MyTicketView(View):
 
     def get(self, request, *args, **kwargs):
 
-        return render(request, self.template_name)
+        tickets = TicketConversation.objects.filter(fk_ticket__fk_user=request.user).order_by('-updated_at')
+
+        return render(request, self.template_name, { 'tickets' : tickets })
 
     def post(self, request, *args, **kwargs):
 
