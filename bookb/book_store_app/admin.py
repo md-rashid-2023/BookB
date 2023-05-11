@@ -33,8 +33,22 @@ class BBRolesComponentsAdmin(admin.ModelAdmin):
     search_fields = ['fk_role']
 
 
+class TicketAdmin(admin.ModelAdmin):
+
+    list_display = ('pk_ticket', 'fk_user', 'subject', 'description', 'is_closed')
+    search_fields = ['fk_user', 'subject']
+
+
+class TicketConversationAdmin(admin.ModelAdmin):
+
+    list_display = ('pk_ticket_conversation', 'fk_ticket', 'text', 'name', 'admin_name')
+    search_fields = ['fk_ticket', 'name']
+
+
 admin.site.register(Books, BooksAdmin)
 admin.site.register(BBComponents, BBComponentsAdmin)
 admin.site.register(BBRoles, BBRolesAdmin)
 admin.site.register(BBUserRoles, BBUserRolesAdmin)
 admin.site.register(BBRolesComponents, BBRolesComponentsAdmin)
+admin.site.register(Ticket, TicketAdmin)
+admin.site.register(TicketConversation, TicketConversationAdmin)
